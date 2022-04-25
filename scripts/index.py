@@ -87,6 +87,27 @@ def deleteStudent():
 
     getData()
 
+# Buscar registro
+def searchStudent():
+
+    search = {}
+
+    if len(buscarNombre.get()) != 0:
+        search["nombre"] = buscarNombre.get()
+    if len(buscarSexo.get()) != 0:
+        search["sexo"] = buscarSexo.get()
+    if len(buscarCalificacion.get()) != 0:
+        search["calificacion"] = buscarCalificacion.get()
+
+    if len(search) != 0:
+        try:
+            clearData()
+            for doc in collection.find(search):
+                table.insert('',0,text=doc["_id"],values=doc["nombre"])
+        except pymongo.errors.ConnectionFailure as error:
+            print(error)
+
+
 # Eventos
 def doubleClickTable(event):
     global ID_ALUMNO
@@ -142,6 +163,24 @@ button_edit["state"] = "disabled"
 button_delete = Button(window, text="Eliminar alumno", command=deleteStudent, bg="red", fg="white")
 button_delete.grid(row=7, columnspan=2,sticky=W+E)
 button_delete["state"] = "disabled"
+
+# Funciones para busqueda de registros
+
+Label(window, text="Buscar Nombre").grid(row=8, column=0)
+buscarNombre = Entry(window)
+buscarNombre.grid(row=8, column=1,sticky=W+E)
+buscarNombre.focus()
+
+Label(window, text="Buscar Sexo").grid(row=9, column=0)
+buscarSexo = Entry(window)
+buscarSexo.grid(row=9, column=1,sticky=W+E)
+
+Label(window, text="Buscar Calificacion").grid(row=10, column=0)
+buscarCalificacion = Entry(window)
+buscarCalificacion.grid(row=10, column=1,sticky=W+E)
+
+button_search = Button(window, text="Buscar alumno", command=searchStudent, bg="blue", fg="white")
+button_search.grid(row=11, columnspan=2,sticky=W+E)
 
 window.mainloop()
 
